@@ -1,5 +1,5 @@
 import time
-from PIL import Image, ImageDraw
+# from PIL import Image, ImageDraw
 import matplotlib.pyplot as plt
 
 def parse(line):
@@ -47,7 +47,7 @@ def reverse_scale(points):
 
 stars_raw = []
 
-with open(file='10/input.txt', mode='tr', encoding='utf-8') as fd:
+with open(file='input.txt', mode='tr', encoding='utf-8') as fd:
     for line in fd:
         parsed = parse(line)
         stars_raw.append(parsed)

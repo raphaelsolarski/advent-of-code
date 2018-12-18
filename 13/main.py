@@ -47,7 +47,7 @@ def parse_file(file):
     return _carts, _tracks_map
 
 
-carts, tracks = parse_file('13/input.txt')
+carts, tracks = parse_file('input.txt')
 # carts, tracks = parse_file('13/test.txt')
 
 # print_tracks(tracks, carts, 150, 150)
