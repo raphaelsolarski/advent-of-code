@@ -120,10 +120,10 @@ def down_field_coordinates(_x, _y):
     return _x, _y + 1
 
 
-def get_all_blank_fields(_map, _units, _width, _height):
+def get_all_blank_fields(_map, _units, _width, x_range, y_range):
     blank = []
-    for _y in range(0, _height):
-        for _x in range(0, _width):
+    for _y in y_range:
+        for _x in x_range:
             if field(_map, _x, _y, _width) == '.' and (_x, _y) not in _units:
                 blank.append((_x, _y))
     return blank
@@ -157,10 +157,10 @@ def get_neighbors_enemies(_map, _x, _y, _width, _height, _units, _enemy_fraction
     return neighbors
 
 
-def build_distance_map(_map, _from_x, _from_y, _width, _height, _units):
+def build_distance_map(_map, _from_x, _from_y, _width, _height, _units, x_range, y_range):
     # start = current_milli_time()
-
-    unvisited = {node: None for node in get_all_blank_fields(_map, _units, _width, _height)}  # using None as +inf
+    unvisited = {node: None for node in
+                 get_all_blank_fields(_map, _units, _width, x_range, y_range)}  # using None as +inf
     visited = {}
     current = (_from_x, _from_y)
     current_distance = 0
@@ -185,25 +185,53 @@ def build_distance_map(_map, _from_x, _from_y, _width, _height, _units):
 
 # returns [((x,y), distance)] where x,y is field to make a step
 # bug probably somewhere there:
-def get_available_destinations(_map, _x, _y, _width, _height, _units, _possible_targets):
+def get_available_destinations(_map, _x, _y, _width, _height, _units, _possible_targets, x_range, y_range):
     results = defaultdict(lambda: None)
-    source_neighbors_fields = get_neighbors(_map, _x, _y, _width, _height, _units)
+    _distance_map_from_current = build_distance_map(_map, _x, _y, _width, _height, _units, x_range, y_range)
+
+    nearest_dict = defaultdict(list)
     for enemy_position, enemy in _possible_targets:
-        target_neighbors_fields = get_neighbors(_map, enemy_position[0], enemy_position[1], _width, _height, _units)
-        for target_neighbor in target_neighbors_fields:
-            _distance_map = build_distance_map(_map, target_neighbor[0], target_neighbor[1], _width, _height, _units)
-            for source_neighbor in source_neighbors_fields:
-                if source_neighbor in _distance_map:
-                    results[source_neighbor] = min(_distance_map[source_neighbor], results[source_neighbor]) if results[
-                                                                                                                    source_neighbor] is not None else \
-                        _distance_map[source_neighbor]
+        for enemy_neighbor in get_neighbors(_map, enemy_position[0], enemy_position[1], _width, _height, _units):
+            if enemy_neighbor in _distance_map_from_current:
+                distance = _distance_map_from_current[enemy_neighbor]
+                nearest_dict[distance].append(enemy_neighbor)
+
+    if len(nearest_dict) == 0:
+        return results
+
+    nearest_distance = sorted(nearest_dict.keys())[0]
+    nearest_targets = nearest_dict[nearest_distance]
+    chosen = sorted(nearest_targets, key=lambda t: (t[1], t[0]))[0]
+
+    _distance_map_from_chosen = build_distance_map(_map, chosen[0], chosen[1], _width, _height, _units, x_range,
+                                                   y_range)
+    source_neighbors_fields = get_neighbors(_map, _x, _y, _width, _height, _units)
+
+    for source_neighbor in source_neighbors_fields:
+        if source_neighbor in _distance_map_from_chosen:
+            results[source_neighbor] = _distance_map_from_chosen[source_neighbor]
+
     return results
+    # 
+    # for enemy_position, enemy in _possible_targets:
+    #     target_neighbors_fields = get_neighbors(_map, enemy_position[0], enemy_position[1], _width, _height, _units)
+    #     for target_neighbor in target_neighbors_fields:
+    #         _distance_map = build_distance_map(_map, target_neighbor[0], target_neighbor[1], _width, _height, _units, x_range, y_range)
+    #         for source_neighbor in source_neighbors_fields:
+    #             if source_neighbor in _distance_map:
+    #                 results[source_neighbor] = min(_distance_map[source_neighbor], results[source_neighbor]) if results[
+    #                                                                                                                 source_neighbor] is not None else \
+    #                     _distance_map[source_neighbor]
+    # return results
 
 
 def run_test(file_name, evlves_power):
     _cave_map, _units, _height, _width = parse_file(file_name, evlves_power)
     print('height: {}, width: {}'.format(_height, _width))
     print_map(_cave_map, _units, _width, _height)
+
+    y_range = range(0, _height)
+    x_range = range(0, _width)
 
     round_index = 0
 
@@ -226,7 +254,8 @@ def run_test(file_name, evlves_power):
             if len(neighbors_enemies_positions) > 0:
                 pass
             else:
-                available_destinations = get_available_destinations(_cave_map, x, y, _width, _height, _units, enemies)
+                available_destinations = get_available_destinations(_cave_map, x, y, _width, _height, _units, enemies,
+                                                                    x_range, y_range)
                 if len(available_destinations) > 0:
                     step = sorted(available_destinations.items(), key=lambda t: (t[1], (t[0][1], t[0][0])))[0]
                     _units[step[0]] = unit
@@ -262,6 +291,7 @@ def brute_force(_file_name, test_range=range(4, 40)):
             print("success for {}".format(i))
             return result
         except Exception as e:
+            print(e)
             print("Failed for {}".format(i))
 
 
@@ -270,7 +300,7 @@ assert brute_force('test4.txt') == 31284
 assert brute_force('test5.txt') == 3478
 assert brute_force('test6.txt') == 6474
 assert brute_force('test7.txt') == 1140
-assert brute_force('test10.txt') == 46 * 1457
+# assert brute_force('test10.txt') == 46 * 1457
 
 # run_test(32) - ok
 # run_test(16) - not ok
@@ -281,8 +311,7 @@ assert brute_force('test10.txt') == 46 * 1457
 # run_test(24) - not ok 
 # run_test(25) #- not ok 
 
-# result = brute_force('input.txt', test_range=range(24,26))
-
-# print(result)
+result = brute_force('input.txt', test_range=range(24, 26))
+print(result)
 # very slow - to optimize
 # 181952

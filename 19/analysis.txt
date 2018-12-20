@@ -1,0 +1,61 @@
+addi 3 16 3    # = 0 + 16  -> 3 # jump to 16 + 1 E
+seti 1 3 2     set reg[2] = 1                          A
+seti 1 0 5     set reg[5] = 1                          B
+mulr 2 5 1     reg[1] = reg[2] * reg[5]                C
+eqrr 1 4 1     reg[1] = reg[1] == reg[4]
+addr 1 3 3     jump to reg[1] + reg[3] + 1
+addi 3 1 3   jump to reg[3] + 1 + 1 -> D               # dodaj 
+addr 2 0 0   reg[0] = reg[2] + reg[0]                  # dodać linię dodająca reg[5] = reg[4]
+addi 5 1 5   reg[5] = reg[5] + 1                       D
+gtrr 5 4 1   reg[1] = reg[5] > reg[4]
+addr 3 1 3   jump to reg[3] + reg[1] + 1
+seti 2 2 3   jump to 2 + 1  -> C
+addi 2 1 2   reg[2] = 1 + reg[1]
+gtrr 2 4 1   reg[1] = reg[2] > reg[4]
+addr 1 3 3   jump to reg[1] + reg[3] + 1
+seti 1 1 3   jump to 1 + 1 -> B
+mulr 3 3 3   jump to reg[3] * reg[3]                  
+addi 4 2 4   reg[4] = reg[4] + 2                      E 
+mulr 4 4 4   reg[4] = reg[4] * reg[4]
+mulr 3 4 4   reg[4] = reg[3] * reg[4]
+muli 4 11 4  reg[4] = reg[4] * 11
+addi 1 4 1  reg[1] = reg[1] + 4
+mulr 1 3 1  reg[1] = reg[1] * reg[3]
+addi 1 2 1  reg[0] = reg[0] + 2
+addr 4 1 4  reg[4] = reg[4] + reg[1]
+addr 3 0 3 jump to reg[0] + reg[3] + 1
+seti 0 2 3 jump to 0 + 1 -> A
+setr 3 6 1  reg[1] = reg[3]
+mulr 1 3 1  reg[1] = reg[1] * reg[3] # reg[3] * reg[3]
+addr 3 1 1  reg[1] = reg[3] * reg[1] # reg[3] * reg[3] * reg[3]
+mulr 3 1 1  reg[1] = reg[3] * reg[1] # reg[3] ^ 4
+muli 1 14 1 reg[1] = reg[1] * 14
+mulr 1 3 1  reg[1] = reg[1] * reg[3]
+addr 4 1 4  reg[4] = reg[1] * reg[4]
+seti 0 6 0 reg[0] = 0
+seti 0 9 3 jump 0 + 1 - > A
+
+
+reg[0] jest setowane na zero w 36 
+reg[0] jest podbijane o +2 w 25
+reg[0] jest podbijane o reg[2] w 9
+
+aby wyjść z programu reg[0] musi mieć min 10 aby wyskoczyć jumpem z 27
+
+lub musimy wejść na 18 
+aby wejść na 18 reg[2] > 10551326 w 15
+czyli na koniec reg[2] = 10551327 - zakładając że rośnie po 1
+
+r4 = 
+
+[0, 10550400, 0, 34, 10551326, 0]
+
+counter = 0
+for y in range(1, 10551326+1):
+    for x in range(1, 10551326+1):
+        if y * x == 10551326:
+            counter = counter + 1
+            break
+        elif y * x > 10551326:
+            break
+        
