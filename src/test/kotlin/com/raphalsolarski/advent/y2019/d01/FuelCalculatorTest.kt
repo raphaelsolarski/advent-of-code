@@ -1,5 +1,6 @@
 package com.raphalsolarski.advent.y2019.d01
 
+import com.raphalsolarski.advent.utils.ParseUtils
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
@@ -21,7 +22,7 @@ internal class FuelCalculatorTest {
 
     @Test
     fun part1Result() {
-        var input = parseInput()
+        val input = parseInput()
         println(sumAll(input.map { FuelCalculator.compute(it) }))
     }
 
@@ -34,26 +35,20 @@ internal class FuelCalculatorTest {
     fun `part2 test cases`(input: Long, expectedResult: Long) {
         assertEquals(expectedResult, FuelCalculator.compute2(input))
     }
-    
+
     @Test
     fun part2Result() {
         var input = parseInput()
         println(sumAll(input.map { FuelCalculator.compute2(it) }))
     }
-    
+
     private fun sumAll(numbers: List<Long>): Long {
         return numbers.sum()
     }
 
     private fun parseInput(): List<Long> {
-        val lines = javaClass.getResource("/2019/01/input.txt")?.readText()?.split("\n")
-        if (lines != null) {
-            return lines
-                    .filter { it.isNotEmpty() }
-                    .map { it.toLong() }
-        } else {
-            throw IllegalStateException("File can't be read")
-        }
+        return ParseUtils.readLines("/2019/01/input.txt")
+                .map { it.toLong() }
     }
 
 }
