@@ -1,1 +1,5 @@
 2017/01-kotlin/target/
+.idea/
+.vscode/
+build/
+.gradle/
