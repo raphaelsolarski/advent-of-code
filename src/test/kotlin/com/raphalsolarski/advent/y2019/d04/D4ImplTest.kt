@@ -20,7 +20,22 @@ internal class D4ImplTest {
 
     @Test
     fun `part1-result`() {
-        println(D4Impl.testRange(IntRange(D4Impl.part1InputMin, D4Impl.part1InputMax)))
+        println(D4Impl.testRange { D4Impl.testPassword(it) })
     }
 
+    @ParameterizedTest(name = "{0} -> {1}")
+    @CsvSource(
+            "112233 | true",
+            "123444 | false",
+            "111122 | true",
+            delimiter = '|'
+    )
+    fun `part2-test-passwords-validity`(password: Int, expectedResult: Boolean) {
+        assertEquals(expectedResult, D4Impl.testPasswordPart2(password))
+    }
+
+    @Test
+    fun `part2-result`() {
+        println(D4Impl.testRange { D4Impl.testPasswordPart2(it) })
+    }
 }
