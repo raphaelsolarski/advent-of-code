@@ -1,7 +1,6 @@
 package com.raphalsolarski.advent.y2019.d02
 
 import com.raphalsolarski.advent.utils.ParseUtils
-import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
@@ -61,6 +60,6 @@ internal class D1ImplTest {
     }
 
     private fun parsedInput(): List<Int> {
-        return splitToList(ParseUtils.readLines("/2019/02/input.txt")[0])
+        return splitToList(ParseUtils.readLinesFromResource("/2019/02/input.txt")[0])
     }
 }

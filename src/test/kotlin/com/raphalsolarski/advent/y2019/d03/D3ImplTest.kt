@@ -67,7 +67,7 @@ internal class D3ImplTest {
     }
 
     private fun parseInput(): List<List<String>> {
-        return ParseUtils.readLines("/2019/03/input.txt")
+        return ParseUtils.readLinesFromResource("/2019/03/input.txt")
                 .map { it.split(",") }
     }
 

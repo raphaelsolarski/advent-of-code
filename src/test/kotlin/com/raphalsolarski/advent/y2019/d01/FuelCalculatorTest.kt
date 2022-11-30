@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
-import java.lang.IllegalStateException
 
 internal class FuelCalculatorTest {
 
@@ -47,7 +46,7 @@ internal class FuelCalculatorTest {
     }
 
     private fun parseInput(): List<Long> {
-        return ParseUtils.readLines("/2019/01/input.txt")
+        return ParseUtils.readLinesFromResource("/2019/01/input.txt")
                 .map { it.toLong() }
     }
 
