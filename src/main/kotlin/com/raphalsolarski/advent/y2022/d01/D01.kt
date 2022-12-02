@@ -2,50 +2,33 @@ package com.raphalsolarski.advent.y2022.d01
 
 class D01 {
     companion object {
-        fun findMaxCaloriesCarryingElf(lines: List<String>): ElfInventory {
-            var currentMax: Long = 0
-            var currentMaxIndex = 0
-            var currentElfIndex = 0
-            val elves = mutableListOf<ElfInventory>()
-            elves.add(ElfInventory(0, 0))
-            for (line in lines) {
-                if (line == "") {
-                    elves.add(ElfInventory(currentElfIndex + 1, 0))
-                    currentElfIndex++;
-                    continue
-                }
-                val currentElfOriginal = elves[currentElfIndex]
-                val elfUpdated = currentElfOriginal.copy(elfCalories = currentElfOriginal.elfCalories + line.toLong())
-                elves[currentElfIndex] = elfUpdated
-                if (currentMax < elfUpdated.elfCalories) {
-                    currentMaxIndex = elfUpdated.elfIndex
-                    currentMax = elfUpdated.elfCalories
-                }
-            }
-            return elves[currentMaxIndex]
+        fun findMaxCaloriesCarryingElf(lines: List<String>): ElfInventory? {
+            return createElvesRanking(lines).firstOrNull()
         }
 
         fun createElvesRanking(lines: List<String>): List<ElfInventory> {
-            var currentMax: Long = 0
-            var currentMaxIndex = 0
-            var currentElfIndex = 0
-            val elves = mutableListOf<ElfInventory>()
-            elves.add(ElfInventory(0, 0))
-            for (line in lines) {
-                if (line == "") {
-                    elves.add(ElfInventory(currentElfIndex + 1, 0))
-                    currentElfIndex++;
-                    continue
+            return chunkInputByEmptyLines(lines)
+                .mapIndexed { index, chunk ->
+                    ElfInventory(index, chunk.sumOf { it.toLong() })
                 }
-                val currentElfOriginal = elves[currentElfIndex]
-                val elfUpdated = currentElfOriginal.copy(elfCalories = currentElfOriginal.elfCalories + line.toLong())
-                elves[currentElfIndex] = elfUpdated
-                if (currentMax < elfUpdated.elfCalories) {
-                    currentMaxIndex = elfUpdated.elfIndex
-                    currentMax = elfUpdated.elfCalories
+                .sortedByDescending { it.elfCalories }
+        }
+
+        private fun chunkInputByEmptyLines(input: List<String>): List<List<String>> {
+            val chunks = mutableListOf<List<String>>()
+            val currentChunk = mutableListOf<String>()
+            for (line in input) {
+                if (line != "") {
+                    currentChunk.add(line)
+                } else {
+                    chunks.add(currentChunk.toList())
+                    currentChunk.clear()
                 }
             }
-            return elves.sortedByDescending { it.elfCalories }
+            if (currentChunk.isNotEmpty()) {
+                chunks.add(currentChunk.toList())
+            }
+            return chunks
         }
     }
 

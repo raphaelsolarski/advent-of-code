@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test
 
 class D01Test {
 
-    val exampleInput = listOf(
+    private val exampleInput = listOf(
         "1000",
         "2000",
         "3000",
@@ -23,6 +23,13 @@ class D01Test {
         "10000"
     )
 
+    private val realInputLines = ParseUtils.readLinesFromResource("/2022/01/input.txt", withEmptyLines = true)
+
+    @Test
+    fun emptyInputTest() {
+        Assertions.assertEquals(null, D01.findMaxCaloriesCarryingElf(listOf()))
+    }
+
     @Test
     fun exampleCase() {
         val result = D01.findMaxCaloriesCarryingElf(exampleInput)
@@ -31,23 +38,23 @@ class D01Test {
 
     @Test
     fun firstStarTest() {
-        val lines = ParseUtils.readLinesFromResource("/2022/01/input.txt", withEmptyLines = true)
-        val result = D01.findMaxCaloriesCarryingElf(lines)
+        val result = D01.findMaxCaloriesCarryingElf(realInputLines)
         Assertions.assertEquals(D01.ElfInventory(elfIndex = 10, elfCalories = 67622), result)
     }
 
-
     @Test
     fun secondStarExampleCase() {
-        val result = D01.createElvesRanking(exampleInput).subList(0, 3).sumOf { it.elfCalories }
+        val result = getSumOfFirst3(D01.createElvesRanking(exampleInput))
         Assertions.assertEquals(45000, result)
     }
 
     @Test
     fun secondStarTest() {
-        val lines = ParseUtils.readLinesFromResource("/2022/01/input.txt", withEmptyLines = true)
-        val result = D01.createElvesRanking(lines).subList(0, 3).sumOf { it.elfCalories }
+        val result = getSumOfFirst3(D01.createElvesRanking(realInputLines))
         Assertions.assertEquals(201491, result)
     }
+
+    private fun getSumOfFirst3(ranking: List<D01.ElfInventory>) =
+        ranking.subList(0, 3).sumOf { it.elfCalories }
 
 }
