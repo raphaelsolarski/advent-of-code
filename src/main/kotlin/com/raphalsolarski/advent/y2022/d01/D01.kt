@@ -7,11 +7,9 @@ class D01 {
         }
 
         fun createElvesRanking(lines: List<String>): List<ElfInventory> {
-            return chunkInputByEmptyLines(lines)
-                .mapIndexed { index, chunk ->
+            return chunkInputByEmptyLines(lines).mapIndexed { index, chunk ->
                     ElfInventory(index, chunk.sumOf { it.toLong() })
-                }
-                .sortedByDescending { it.elfCalories }
+                }.sortedByDescending { it.elfCalories }
         }
 
         private fun chunkInputByEmptyLines(input: List<String>): List<List<String>> {
