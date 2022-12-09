@@ -1,8 +1,7 @@
 package com.raphalsolarski.advent.y2022.d10
 
 import com.raphalsolarski.advent.utils.ParseUtils
-import com.raphalsolarski.advent.y2022.d09.D09
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
 internal class D10Test {
