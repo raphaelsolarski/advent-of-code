@@ -34,7 +34,7 @@ internal class D08Test {
 
     @Test
     fun star2realTest() {
-//        assertEquals(3444, D06.findMessageMarker(realInput))
+        assertEquals(8, D08.findHighestScenicScore(realInput))
     }
 
 }
