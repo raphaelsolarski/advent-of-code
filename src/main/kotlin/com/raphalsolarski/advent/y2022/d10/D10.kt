@@ -9,10 +9,16 @@ object D10 {
         180,
         220
     )
+
+    private val high = 6
+
+    private val wide = 40
+
+
     fun theMethod(commands: List<String>): Int {
         val parsedCommands = commands.map { parseCommand(it) }
 
-        val strengthHistory = mutableListOf<Int>()
+        val xRegisterHistory = mutableListOf<Int>()
 
         var xRegisterValue = 1
         var cycles = 1
@@ -20,17 +26,36 @@ object D10 {
         for (command in parsedCommands) {
             if (command.name == "addx") {
                 val arg = command.arg!!
-                strengthHistory.add(signalStrength(cycles, xRegisterValue))
-                strengthHistory.add(signalStrength(cycles + 1, xRegisterValue))
+                xRegisterHistory.add(xRegisterValue)
+                xRegisterHistory.add(xRegisterValue)
                 xRegisterValue += arg
                 cycles += 2
             } else {
-                strengthHistory.add(signalStrength(cycles, xRegisterValue))
+                xRegisterHistory.add(xRegisterValue)
                 cycles++
             }
         }
 
-        return interestingCycles.map { strengthHistory[it - 1] }.sum()
+        for(y in IntRange(0, high -1)) {
+            for (x in IntRange(0, wide - 1)) {
+                val currentCycle = (wide * y + x) + 1
+                if (isSpriteInCurrentDrawPixel(currentCycle, xRegisterHistory)){
+                    print("#")
+                } else {
+                    print(".")
+                }
+            }
+            println()
+        }
+
+        return 0
+    }
+
+    private fun isSpriteInCurrentDrawPixel(currentCycle: Int, registerHistory: List<Int>): Boolean {
+        val xValueDuringCycle = registerHistory[currentCycle - 1]
+        val spriteStartPosition = xValueDuringCycle - 1
+        val spriteEndPosition = xValueDuringCycle + 1
+        return (currentCycle % wide - 1) in spriteStartPosition..spriteEndPosition
     }
 
     private fun parseCommand(commandRaw: String): Command {

@@ -182,5 +182,4 @@ internal class D10Test {
     fun star2realTest() {
         assertEquals(2665, D10.theMethod2(realInput))
     }
-
 }
