@@ -1,13 +1,10 @@
 package com.raphalsolarski.advent.y2022.d11
 
-import java.math.BigInteger
-
-typealias UsedCompType = BigInteger
-
 object D11 {
+    //not sure if it would work for non-primary numbers
     private const val loggingEnabled = false
 
-    fun stats(monkeysInput: List<Monkey>, rounds: Int, decreaser: UsedCompType = BigInteger.valueOf(3)): Long {
+    fun stats(monkeysInput: List<Monkey>, rounds: Int, decreaser: Long = 3): Long {
         val monkeys = simulate(monkeysInput, rounds, decreaser)
         val sortedByDescending = monkeys.sortedByDescending { it.inspectionsCount }
             .map { it.inspectionsCount }
@@ -16,44 +13,76 @@ object D11 {
             .reduce { m1, m2 -> m1 * m2 }
     }
 
-    private fun simulate(monkeysInput: List<Monkey>, rounds: Int, decreaser: UsedCompType): List<Monkey> {
-        val monkeys = monkeysInput.toList()
+    private fun simulate(monkeysInput: List<Monkey>, rounds: Int, decreaser: Long): List<Monkey> {
+        val monkeys = InternalMonkey.fromInputMonkeys(monkeysInput)
         for (round in IntRange(1, rounds)) {
-            for (monkey in monkeys) {
+            for ((monkeyIndex, monkey) in monkeys.withIndex()) {
                 for (item in monkey.items) {
-                    var worryLevel = item
-                    worryLevel = monkey.operation(worryLevel)
-//                    worryLevel = worryLevel / decreaser
-                    if (monkey.test(worryLevel)) {
-                        monkeys[monkey.ifTrueFollower].items.add(worryLevel)
+                    val itemAfterOperation = item.applyOperation(monkey.inputMonkey.operation)
+                    if (itemAfterOperation.test(monkeyIndex)) {
+                        monkeys[monkey.inputMonkey.ifTrueFollower].items.add(itemAfterOperation)
                     } else {
-                        monkeys[monkey.ifFalseFollower].items.add(worryLevel)
+                        monkeys[monkey.inputMonkey.ifFalseFollower].items.add(itemAfterOperation)
                     }
-                    monkey.inspectionsCount = monkey.inspectionsCount + 1
+                    monkey.inputMonkey.inspectionsCount++
                 }
                 monkey.items.clear()
             }
-            if (round % 10 == 0) println(round)
             if (loggingEnabled) {
                 if (round in setOf(1, 20, 100, 200, 1000)) {
                     println("== After round $round ==")
                     for ((index, monkey) in monkeys.withIndex()) {
-                        println("Monkey $index inspected items ${monkey.inspectionsCount} times. current items: ${monkey.items}")
+                        println("Monkey $index inspected items ${monkey.inputMonkey.inspectionsCount} times.")
                     }
                     println()
                 }
             }
         }
-        return monkeys
+        return monkeysInput
     }
 
     data class Monkey(
-        val items: MutableList<UsedCompType>,
-        val operation: (UsedCompType) -> UsedCompType,
-        val test: (UsedCompType) -> Boolean,
+        val startItems: MutableList<Long>,
+        val operation: (Long) -> Long,
+        val testDivisor: Long,
         val ifTrueFollower: Int,
         val ifFalseFollower: Int,
         var inspectionsCount: Long = 0
     )
+
+    data class Item(val remindersForMonkeyTestDividers: List<Long>, val monkeyDividers: List<Long>) {
+
+        fun applyOperation(operation: (Long) -> Long): Item {
+            return copy(
+                remindersForMonkeyTestDividers = remindersForMonkeyTestDividers.zip(monkeyDividers).map { pair ->
+                    val (currentReminder, monkeyDivider) = pair
+                    operation(currentReminder) % monkeyDivider
+                })
+        }
+
+        fun test(monkeyId: Int): Boolean {
+            return remindersForMonkeyTestDividers[monkeyId] % monkeyDividers[monkeyId] == 0L
+        }
+
+        companion object {
+            fun create(dividers: List<Long>, value: Long): Item {
+                return Item(dividers.map { value % it }, dividers)
+            }
+        }
+    }
+
+    data class InternalMonkey(
+        val items: MutableList<Item>,
+        val inputMonkey: Monkey
+    ) {
+        companion object {
+            fun fromInputMonkeys(inputMonkeys: List<Monkey>): List<InternalMonkey> {
+                val dividers = inputMonkeys.map { it.testDivisor }
+                return inputMonkeys.map {
+                    InternalMonkey(it.startItems.map { item -> Item.create(dividers, item) }.toMutableList(), it)
+                }
+            }
+        }
+    }
 
 }
