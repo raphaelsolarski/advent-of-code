@@ -6,6 +6,28 @@ import com.fasterxml.jackson.databind.node.ArrayNode
 import com.fasterxml.jackson.databind.node.IntNode
 
 object D13 {
+    private val packetDecodeStart = PacketDataList(listOf(PacketDataList(listOf(PacketDataInteger(2)))))
+    private val packetDecodeEnd = PacketDataList(listOf(PacketDataList(listOf(PacketDataInteger(6)))))
+    fun sortPacketsAndFindDecoderKey(packets: List<PacketDataList>): Int {
+        val packetsWithDividerPackets = packets + packetDecodeStart + packetDecodeEnd
+        val sorted = packetsWithDividerPackets.sortedWith { o1, o2 ->
+            if (isInRightOrder(o1, o2)!!)
+                -1
+            else
+                1
+        }
+
+
+        return findPacketIndex(sorted, packetDecodeStart) * findPacketIndex(sorted, packetDecodeEnd)
+    }
+
+    private fun findPacketIndex(
+        sorted: List<PacketDataList>,
+        packetDecodeStart: PacketDataList
+    ): Int {
+        return sorted.withIndex().find { it.value == packetDecodeStart }!!.index + 1
+    }
+
     fun sumRightPairsIndices(lines: List<String>): Int {
         return parse(lines).withIndex()
             .filter { isInRightOrder(it.value.first, it.value.second)!! }

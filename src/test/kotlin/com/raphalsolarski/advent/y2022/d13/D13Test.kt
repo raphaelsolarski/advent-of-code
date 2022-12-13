@@ -13,6 +13,8 @@ internal class D13Test {
 
     private val realInput = ParseUtils.readLinesFromResource("/2022/13/input.txt", withEmptyLines = true)
 
+    private val realInputWithoutEmptyLines = ParseUtils.readLinesFromResource("/2022/13/input.txt", withEmptyLines = false)
+
     private val exampleInput = listOf(
         "[1,1,3,1,1]",
         "[1,1,5,1,1]",
@@ -38,6 +40,8 @@ internal class D13Test {
         "[1,[2,[3,[4,[5,6,7]]]],8,9]",
         "[1,[2,[3,[4,[5,6,0]]]],8,9]",
     )
+
+    val exampleInputWithoutEmptyLines = exampleInput.filterNot { it == "" }
 
     @Test
     internal fun testParse() {
@@ -83,12 +87,12 @@ internal class D13Test {
 
     @Test
     fun star2examplesTest() {
-        assertEquals(1, D09.simulateAndCountVisitedByTail(exampleInput, tailSize = 9))
+        assertEquals(140, D13.sortPacketsAndFindDecoderKey(exampleInputWithoutEmptyLines.map { parsePacket(it) }))
     }
 
     @Test
     fun star2realTest() {
-        assertEquals(2665, D09.simulateAndCountVisitedByTail(realInput, tailSize = 9))
+        assertEquals(2665, D13.sortPacketsAndFindDecoderKey(realInputWithoutEmptyLines.map { parsePacket(it) }))
     }
 
 }
