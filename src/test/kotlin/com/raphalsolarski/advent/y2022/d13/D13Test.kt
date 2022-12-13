@@ -4,13 +4,14 @@ import com.raphalsolarski.advent.utils.ParseUtils
 import com.raphalsolarski.advent.y2022.d09.D09
 import com.raphalsolarski.advent.y2022.d13.D13.PacketDataInteger
 import com.raphalsolarski.advent.y2022.d13.D13.PacketDataList
-import org.junit.jupiter.api.Assertions.assertEquals
+import com.raphalsolarski.advent.y2022.d13.D13.parsePacket
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 
 
 internal class D13Test {
 
-    private val realInput = ParseUtils.readLinesFromResource("/2022/13/input.txt")
+    private val realInput = ParseUtils.readLinesFromResource("/2022/13/input.txt", withEmptyLines = true)
 
     private val exampleInput = listOf(
         "[1,1,3,1,1]",
@@ -64,13 +65,20 @@ internal class D13Test {
     }
 
     @Test
+    fun compareTest() {
+        assertTrue(D13.isInRightOrder(parsePacket("[1,1,3,1,1]"), parsePacket("[1,1,5,1,1]"))!!)
+        assertTrue(D13.isInRightOrder(parsePacket("[[1],[2,3,4]]"), parsePacket("[[1],4]"))!!)
+        assertFalse(D13.isInRightOrder(parsePacket("[9]"), parsePacket("[[8,7,6]]"))!!)
+    }
+
+    @Test
     fun star1examplesTest() {
-        assertEquals(13, D09.simulateAndCountVisitedByTail(exampleInput, tailSize = 1))
+        assertEquals(13, D13.sumRightPairsIndices(exampleInput))
     }
 
     @Test
     fun star1realTest() {
-        assertEquals(6256, D09.simulateAndCountVisitedByTail(realInput, tailSize = 1))
+        assertEquals(6420, D13.sumRightPairsIndices(realInput))
     }
 
     @Test
