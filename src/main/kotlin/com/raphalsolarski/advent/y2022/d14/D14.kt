@@ -12,21 +12,24 @@ object D14 {
         val sand = mutableSetOf<Point>()
 
         val rocksMaxRow = rocks.maxBy { it.row }.row
-        var rocksMaxRowAchievedBySand = false
-        while (!rocksMaxRowAchievedBySand) {
+
+        val lowerRockRow = rocksMaxRow + 2
+
+        var sourceAchievedBySand = false
+        while (!sourceAchievedBySand) {
             var emittedSand = sourcePoint
-            while (!rocksMaxRowAchievedBySand) {
+            while (!sourceAchievedBySand) {
                 val possibleMoves = Direction.values()
                     .map { emittedSand.move(it) }
-                    .filter { isPossibleMove(it, rocks, sand) }
+                    .filter { isPossibleMove(it, rocks, sand, lowerRockRow) }
                 if (possibleMoves.isEmpty()) {
                     sand += emittedSand
+                    if (emittedSand == sourcePoint) {
+                        sourceAchievedBySand = true
+                    }
                     break
                 } else {
                     emittedSand = possibleMoves[0]
-                }
-                if (emittedSand.row == rocksMaxRow) {
-                    rocksMaxRowAchievedBySand = true
                 }
             }
         }
@@ -55,8 +58,8 @@ object D14 {
         return rocksRaw.flatMap { parseLine(it) }.toSet()
     }
 
-    private fun isPossibleMove(targetPosition: Point, rocks: Set<Point>, sand: Set<Point>): Boolean {
-        return targetPosition !in rocks && targetPosition !in sand
+    private fun isPossibleMove(targetPosition: Point, rocks: Set<Point>, sand: Set<Point>, lowerRockRow: Int): Boolean {
+        return targetPosition !in rocks && targetPosition !in sand && targetPosition.row < lowerRockRow
     }
 
     enum class Direction(val columnDelta: Int, val rowDelta: Int) {
