@@ -23,17 +23,17 @@ internal class D12Test {
 
     @Test
     fun star1realTest() {
-        assertEquals(6256, D12.findClosestDistance(realInput))
+        assertEquals(484, D12.findClosestDistance(realInput))
     }
 
     @Test
     fun star2examplesTest() {
-        assertEquals(1, D09.simulateAndCountVisitedByTail(exampleInput, tailSize = 9))
+        assertEquals(29, D12.findClosestDistanceFromAnyStartingPoint(exampleInput))
     }
 
     @Test
     fun star2realTest() {
-        assertEquals(2665, D09.simulateAndCountVisitedByTail(realInput, tailSize = 9))
+        assertEquals(2665, D12.findClosestDistanceFromAnyStartingPoint(realInput))
     }
 
 }

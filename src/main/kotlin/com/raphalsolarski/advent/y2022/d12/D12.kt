@@ -4,8 +4,21 @@ object D12 {
 
     fun findClosestDistance(mapRaw: List<String>): Int {
         val map = parse(mapRaw)
-        val startPoint = map.findPointWithChar('S')!!
-        val endPoint = map.findPointWithChar('E')!!
+        val startPoint = map.findPointsWithChar('S')[0]
+        return closestDistanceForStartingPoint(map, startPoint)!!
+    }
+
+    fun findClosestDistanceFromAnyStartingPoint(mapRaw: List<String>): Int {
+        val map = parse(mapRaw)
+        val possibleStartPoints = map.findPointsWithChar('a') + map.findPointsWithChar('S')
+        return possibleStartPoints.mapNotNull { closestDistanceForStartingPoint(map, it) }.minOf { it }
+    }
+
+    private fun closestDistanceForStartingPoint(
+        map: HilLMap,
+        startPoint: Point
+    ): Int? {
+        val endPoint = map.findPointsWithChar('E')[0]
 
         val discoveredPoints = mutableMapOf<Point, TrailPoint>()
         val toCheck = mutableSetOf<TrailPoint>()
@@ -13,9 +26,9 @@ object D12 {
         discoveredPoints[startPoint] = TrailPoint(startPoint, null)
         toCheck.add(TrailPoint(startPoint, null))
 
-        while(toCheck.isNotEmpty()) {
+        while (toCheck.isNotEmpty()) {
             val pointToCheck = toCheck.elementAt(0)
-//            println("point: ${pointToCheck.point} discovered: ${discoveredPoints.keys.size}")
+            //            println("point: ${pointToCheck.point} discovered: ${discoveredPoints.keys.size}")
             toCheck.remove(pointToCheck)
             for (possiblePoint in map.possiblePointsMoves(pointToCheck.point)) {
                 if (possiblePoint in discoveredPoints) {
@@ -30,7 +43,7 @@ object D12 {
             }
         }
 
-        return discoveredPoints[endPoint]!!.length()
+        return discoveredPoints[endPoint]?.length()
     }
 
     private fun parse(map: List<String>): HilLMap {
@@ -68,7 +81,7 @@ object D12 {
         fun possiblePointsMoves(currentPoint: Point): List<Point> {
             return Direction.values().toList()
                 .map { currentPoint.move(it) }
-                .filter { inMapBounds(it) && availableByHigh(currentPoint, it)}
+                .filter { inMapBounds(it) && availableByHigh(currentPoint, it) }
         }
 
         private fun inMapBounds(point: Point): Boolean {
@@ -93,15 +106,16 @@ object D12 {
             return internal[point.row][point.column]
         }
 
-        fun findPointWithChar(char: Char): Point? {
+        fun findPointsWithChar(char: Char): List<Point> {
+            val results = mutableListOf<Point>()
             for ((rowIndex, row) in internal.withIndex()) {
                 for ((columnIndex, element) in row.withIndex()) {
                     if (element == char) {
-                        return Point(columnIndex, rowIndex)
+                        results.add(Point(columnIndex, rowIndex))
                     }
                 }
             }
-            return null
+            return results
         }
     }
 
