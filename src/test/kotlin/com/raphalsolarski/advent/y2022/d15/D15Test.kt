@@ -35,11 +35,11 @@ internal class D15Test {
 
     @Test
     fun star1examplesTest() {
-//        assertEquals(93, D15.simulateAndCountSandInRestBeforeFallingIntoAbyss(exampleInput))
+        assertEquals(26, D15.countUnavailablePointsInRow(10, exampleInput))
     }
 
     @Test
     fun star1realTest() {
-        assertEquals(745, D14.simulateAndCountSandInRestBeforeFallingIntoAbyss(realInput))
+        assertEquals(745, D15.countUnavailablePointsInRow(2000000, realInput))
     }
 }
