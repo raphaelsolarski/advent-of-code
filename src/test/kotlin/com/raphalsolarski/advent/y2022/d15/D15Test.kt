@@ -1,7 +1,6 @@
 package com.raphalsolarski.advent.y2022.d15
 
 import com.raphalsolarski.advent.utils.ParseUtils
-import com.raphalsolarski.advent.y2022.d14.D14
 import com.raphalsolarski.advent.y2022.d15.D15.Point
 import com.raphalsolarski.advent.y2022.d15.D15.SensorWithClosestBeacon
 import org.junit.jupiter.api.Assertions.*
@@ -35,11 +34,11 @@ internal class D15Test {
 
     @Test
     fun star1examplesTest() {
-        assertEquals(26, D15.countUnavailablePointsInRow(10, exampleInput))
+        assertEquals(56000011, D15.findTuningFrequency(exampleInput, 20, 20))
     }
 
     @Test
     fun star1realTest() {
-        assertEquals(745, D15.countUnavailablePointsInRow(2000000, realInput))
+        assertEquals(11379394658764, D15.findTuningFrequency(realInput, 4000000, 4000000))
     }
 }
