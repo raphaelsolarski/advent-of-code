@@ -30,6 +30,20 @@ object D02 {
         }
     }
 
+    fun computeMinimalSetPower(game: Game): Int {
+        return game.showedSets.fold(CubeSet(0, 0, 0)) { currentSet, acc ->
+            acc.copy(
+                red = maxOf(acc.red, currentSet.red),
+                green = maxOf(acc.green, currentSet.green),
+                blue = maxOf(acc.blue, currentSet.blue),
+            )
+        }.power()
+    }
+
     data class Game(val id: Int, val showedSets: List<CubeSet>)
-    data class CubeSet(val red: Int, val green: Int, val blue: Int)
+    data class CubeSet(val red: Int, val green: Int, val blue: Int) {
+        fun power(): Int {
+            return red * green * blue
+        }
+    }
 }

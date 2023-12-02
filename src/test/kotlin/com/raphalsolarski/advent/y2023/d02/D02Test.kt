@@ -3,6 +3,7 @@ package com.raphalsolarski.advent.y2023.d02
 import com.raphalsolarski.advent.utils.ParseUtils
 import com.raphalsolarski.advent.y2023.d02.D02.CubeSet
 import com.raphalsolarski.advent.y2023.d02.D02.Game
+import com.raphalsolarski.advent.y2023.d02.D02.computeMinimalSetPower
 import com.raphalsolarski.advent.y2023.d02.D02.parseLine
 import com.raphalsolarski.advent.y2023.d02.D02.testPossibility
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -10,7 +11,7 @@ import org.junit.jupiter.api.Test
 
 class D02Test {
 
-    private val exampleS1Data = listOf(
+    private val exampleInput = listOf(
         "Game 1: 3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green",
         "Game 2: 1 blue, 2 green; 3 green, 4 blue, 1 red; 1 green, 1 blue",
         "Game 3: 8 green, 6 blue, 20 red; 5 blue, 4 red, 13 green; 5 green, 1 red",
@@ -36,7 +37,7 @@ class D02Test {
 
     @Test
     fun exampleS1() {
-        val idSum = exampleS1Data.map(::parseLine)
+        val idSum = exampleInput.map(::parseLine)
             .filter(::testPossibility)
             .sumOf(Game::id)
         assertEquals(8, idSum)
@@ -48,6 +49,20 @@ class D02Test {
             .filter(::testPossibility)
             .sumOf(Game::id)
         assertEquals(2449, idSum)
+    }
+
+    @Test
+    fun exampleS2() {
+        val powerSum = exampleInput.map(::parseLine)
+            .sumOf { computeMinimalSetPower(it) }
+        assertEquals(2286, powerSum)
+    }
+
+    @Test
+    fun realS2() {
+        val powerSum = realInput.map(::parseLine)
+            .sumOf { computeMinimalSetPower(it) }
+        assertEquals(63981, powerSum)
     }
 
 }
