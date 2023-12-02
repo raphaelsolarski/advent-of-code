@@ -1,7 +1,6 @@
 package com.raphalsolarski.advent.y2023.d01
 
 import com.raphalsolarski.advent.utils.ParseUtils
-import com.raphalsolarski.advent.y2019.d02.D2Impl
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest

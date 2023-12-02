@@ -15,21 +15,23 @@ object D01 {
     )
 
     fun findAndCombineNumbers(line: String): Int {
-        val first = line.find { c -> c.isDigit() }
-        val last = line.last { c -> c.isDigit() }
-        return "$first$last".toInt()
+        val first = line.first(Char::isDigit)
+        val last = line.last(Char::isDigit)
+        return combineTwoNumbers(first, last)
     }
 
     fun findAndCombineNumbersS2(line: String): Int {
         val mappedLine = mapPhrasesToDigits(line)
-        val first = mappedLine.find { c -> c.isDigit() }
-        val last = mappedLine.last { c -> c.isDigit() }
-        return "$first$last".toInt()
+        val first = mappedLine.first(Char::isDigit)
+        val last = mappedLine.last(Char::isDigit)
+        return combineTwoNumbers(first, last)
     }
+
+    private fun combineTwoNumbers(first: Char, last: Char) = "$first$last".toInt()
 
     private fun mapPhrasesToDigits(line: String): String {
         var acc = line
-        while(true) {
+        while (true) {
             val found = acc.findAnyOf(numbers.keys) ?: break
             acc = acc.replaceFirst(found.second, numbers[found.second].toString())
         }
