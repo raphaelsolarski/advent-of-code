@@ -31,11 +31,11 @@ object D02 {
     }
 
     fun computeMinimalSetPower(game: Game): Int {
-        return game.showedSets.fold(CubeSet(0, 0, 0)) { currentSet, acc ->
-            acc.copy(
-                red = maxOf(acc.red, currentSet.red),
-                green = maxOf(acc.green, currentSet.green),
-                blue = maxOf(acc.blue, currentSet.blue),
+        return game.showedSets.fold(CubeSet(0, 0, 0)) { acc, currentSet ->
+            currentSet.copy(
+                red = maxOf(currentSet.red, acc.red),
+                green = maxOf(currentSet.green, acc.green),
+                blue = maxOf(currentSet.blue, acc.blue),
             )
         }.power()
     }
