@@ -33,7 +33,7 @@ class D04Test {
 
     @Test
     fun realS1() {
-        Assertions.assertEquals(13, D04.computeTotalPoints(realInput))
+        Assertions.assertEquals(26914, D04.computeTotalPoints(realInput))
     }
 
 }
