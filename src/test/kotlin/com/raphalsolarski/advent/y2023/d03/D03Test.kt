@@ -38,7 +38,7 @@ class D03Test {
 
     @Test
     fun realS2() {
-        Assertions.assertEquals(467835, D03.sumGearRatios(realInput))
+        Assertions.assertEquals(91622824, D03.sumGearRatios(realInput))
     }
 
 }
