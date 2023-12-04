@@ -22,12 +22,11 @@ object D03 {
         private fun divideNumbers(digitsInRow: List<Point>): MutableList<SchemaNumber> {
             val numbers = mutableListOf<SchemaNumber>()
             val buffer = mutableListOf<Point>()
-            digitsInRow.forEach { digitPoint ->
-                if ((buffer.isNotEmpty() && buffer.last().column + 1 != digitPoint.column) || digitsInRow.last() == digitPoint) {
+            digitsInRow.forEachIndexed { index, digitPoint ->
+                buffer.add(digitPoint)
+                if (digitsInRow.last() == digitPoint || digitsInRow[index + 1].column - 1 != digitPoint.column) {
                     numbers.add(SchemaNumber.fromPoints(buffer.toSet(), this))
                     buffer.clear()
-                } else {
-                    buffer.add(digitPoint)
                 }
             }
             return numbers

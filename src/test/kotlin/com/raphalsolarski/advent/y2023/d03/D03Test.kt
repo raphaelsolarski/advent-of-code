@@ -31,4 +31,5 @@ class D03Test {
         Assertions.assertEquals(560670, D03.sumPartNumbers(realInput))
     }
 
+
 }
