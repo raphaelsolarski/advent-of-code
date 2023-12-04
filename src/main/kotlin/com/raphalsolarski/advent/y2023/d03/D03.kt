@@ -10,30 +10,27 @@ object D03 {
     }
 
     data class EngineSchema(val rows: List<List<Char>>) {
-        // todo: refactor
         fun allNumbers(): List<SchemaNumber> {
             return rows.flatMapIndexed { rowIndex, row ->
-                val digitsInRow = row.flatMapIndexed { columnIndex, element ->
-                    if (element.isDigit()) {
-                        listOf(Point(columnIndex, rowIndex) to element.digitToInt())
-                    } else {
-                        listOf()
-                    }
-                }
-                val foldResult = digitsInRow
-                    .fold(listOf<SchemaNumber>() to listOf<Pair<Point, Int>>()) { (detectedNumbers, numberInPrepare), digit ->
-                        if (numberInPrepare.isEmpty() || numberInPrepare.last().first.column + 1 == digit.first.column) {
-                            detectedNumbers to numberInPrepare.plus(digit)
-                        } else {
-                            detectedNumbers.plus(SchemaNumber.fromPoints(numberInPrepare)) to listOf(digit)
-                        }
-                    }
-                if (foldResult.second.isEmpty()) foldResult.first else foldResult.first.plus(
-                    SchemaNumber.fromPoints(
-                        foldResult.second
-                    )
-                )
+                val digitsInRow = List(row.size) { columnIndex -> Point(columnIndex, rowIndex) }
+                    .filter { element(it).isDigit() }
+
+                divideNumbers(digitsInRow)
             }
+        }
+
+        private fun divideNumbers(digitsInRow: List<Point>): MutableList<SchemaNumber> {
+            val numbers = mutableListOf<SchemaNumber>()
+            val buffer = mutableListOf<Point>()
+            digitsInRow.forEach { digitPoint ->
+                if ((buffer.isNotEmpty() && buffer.last().column + 1 != digitPoint.column) || digitsInRow.last() == digitPoint) {
+                    numbers.add(SchemaNumber.fromPoints(buffer.toSet(), this))
+                    buffer.clear()
+                } else {
+                    buffer.add(digitPoint)
+                }
+            }
+            return numbers
         }
 
         fun element(point: Point): Char {
@@ -66,9 +63,10 @@ object D03 {
         }
 
         companion object {
-            fun fromPoints(points: Collection<Pair<Point, Int>>): SchemaNumber {
-                val number = points.sortedBy { it.first.column }.map { it.second.toString() }.joinToString("").toInt()
-                return SchemaNumber(points.map { it.first }.toSet(), number)
+            fun fromPoints(points: Set<Point>, schema: EngineSchema): SchemaNumber {
+                val number = points.sortedBy { it.column }
+                    .joinToString("") { schema.element(it).toString() }.toInt()
+                return SchemaNumber(points.toSet(), number)
             }
         }
     }
