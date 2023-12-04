@@ -31,5 +31,14 @@ class D03Test {
         Assertions.assertEquals(560670, D03.sumPartNumbers(realInput))
     }
 
+    @Test
+    fun exampleS2() {
+        Assertions.assertEquals(467835, D03.sumGearRatios(exampleInput))
+    }
+
+    @Test
+    fun realS2() {
+        Assertions.assertEquals(467835, D03.sumGearRatios(realInput))
+    }
 
 }

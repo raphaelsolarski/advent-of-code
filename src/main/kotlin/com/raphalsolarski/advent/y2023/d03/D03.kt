@@ -5,8 +5,22 @@ object D03 {
     fun sumPartNumbers(exampleInput: List<String>): Int {
         val engineSchema = EngineSchema.parse(exampleInput)
 
-        val allNumbers = engineSchema.allNumbers()
-        return allNumbers.filter { it.hasAdjacentSymbol(engineSchema) }.sumOf { it.number }
+        return engineSchema.allNumbers()
+            .filter { it.hasAdjacentSymbol(engineSchema) }
+            .sumOf { it.number }
+    }
+
+    fun sumGearRatios(exampleInput: List<String>): Int {
+        val engineSchema = EngineSchema.parse(exampleInput)
+
+        return engineSchema.allNumbers()
+            .flatMap { number ->
+                number.adjacentPossibleGears(engineSchema).map { it to number }
+            }
+            .groupBy({ it.first }, { it.second })
+            .filterValues { it.size == 2 }
+            .values
+            .sumOf { numbers -> numbers[0].number * numbers[1].number }
     }
 
     data class EngineSchema(val rows: List<List<Char>>) {
@@ -59,6 +73,16 @@ object D03 {
                     (element != '.' && !element.isDigit())
                 }
             }
+        }
+
+        fun adjacentPossibleGears(schema: EngineSchema): Set<Point> {
+            return points
+                .flatMap { pointOfNumber ->
+                    pointOfNumber.adjacentPoints().filter { adjPoint ->
+                        schema.element(adjPoint) == '*'
+                    }
+                }
+                .toSet()
         }
 
         companion object {
