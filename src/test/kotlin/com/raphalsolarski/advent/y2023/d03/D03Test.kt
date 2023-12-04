@@ -28,7 +28,7 @@ class D03Test {
 
     @Test
     fun realS1() {
-        Assertions.assertEquals(4361, D03.sumPartNumbers(realInput))
+        Assertions.assertEquals(560670, D03.sumPartNumbers(realInput))
     }
 
 }
