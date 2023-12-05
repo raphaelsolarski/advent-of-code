@@ -59,13 +59,23 @@ class D05Test {
         )
     }
 
+//    @Test
+//    fun exampleS1() {
+//        assertEquals(35, D05.findLowestLocationNumber(exampleInput))
+//    }
+//
+//    @Test
+//    fun realS1() {
+//        assertEquals(35, D05.findLowestLocationNumber(realInput))
+//    }
+
     @Test
-    fun exampleS1() {
-        assertEquals(35, D05.findLowestLocationNumber(exampleInput))
+    fun exampleS2() {
+        assertEquals(46, D05.findLowestLocationNumber(exampleInput))
     }
 
     @Test
-    fun realS1() {
+    fun realS2() {
         assertEquals(35, D05.findLowestLocationNumber(realInput))
     }
 

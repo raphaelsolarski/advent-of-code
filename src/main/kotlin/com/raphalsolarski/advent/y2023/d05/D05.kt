@@ -1,9 +1,12 @@
 package com.raphalsolarski.advent.y2023.d05
 
+import java.util.stream.StreamSupport
+
 object D05 {
 
     fun parseInput(lines: List<String>): Almanac {
-        val seeds = lines[0].removePrefix("seeds:").trim().split(" ").map { it.toLong() }
+        val seeds = lines[0].removePrefix("seeds:").trim().split(" ").map { it.toLong() }.windowed(2, 2)
+            .map { LongRange(it[0], it[0] + it[1]) }
 
         val emptyLines = lines.withIndex().filter { it.value == "" }
 
@@ -23,9 +26,19 @@ object D05 {
     }
 
     fun findLowestLocationNumber(input: List<String>): Long {
-        return parseInput(input)
+        val almanac = parseInput(input)
+        return almanac
             .seeds
-            .minOf { computeLocationNumberForSeed(it, parseInput(input)) }
+            .parallelStream()
+            .flatMap {
+                StreamSupport.stream(
+                    it.spliterator(),
+                    true
+                )
+            }
+            .map { computeLocationNumberForSeed(it, almanac) }
+            .min { o1, o2 -> o1.compareTo(o2) }
+            .orElseThrow()
     }
 
     private fun computeLocationNumberForSeed(seed: Long, almanac: Almanac): Long {
@@ -34,7 +47,7 @@ object D05 {
         }
     }
 
-    data class Almanac(val seeds: List<Long>, val maps: Map<String, CategoryMap>)
+    data class Almanac(val seeds: List<LongRange>, val maps: Map<String, CategoryMap>)
 
     data class CategoryMap(val name: String, val ranges: List<CategoryRange>) {
         fun mapValue(value: Long): Long {
