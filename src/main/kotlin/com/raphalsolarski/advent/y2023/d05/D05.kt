@@ -1,5 +1,6 @@
 package com.raphalsolarski.advent.y2023.d05
 
+import java.util.TreeMap
 import java.util.stream.StreamSupport
 
 object D05 {
@@ -42,23 +43,39 @@ object D05 {
     }
 
     private fun computeLocationNumberForSeed(seed: Long, almanac: Almanac): Long {
-        return almanac.maps.values.fold(seed) { value, map ->
+        return almanac.mapsValues.fold(seed) { value, map ->
             map.mapValue(value)
         }
     }
 
-    data class Almanac(val seeds: List<LongRange>, val maps: Map<String, CategoryMap>)
+    data class Almanac(val seeds: List<LongRange>, val maps: Map<String, CategoryMap>) {
+        val mapsValues = maps.values.toList()
+    }
 
     data class CategoryMap(val name: String, val ranges: List<CategoryRange>) {
+
+        private val internalMap: TreeMap<Long, CategoryRange> = run {
+            val treeMap = TreeMap<Long, CategoryRange>()
+            ranges.forEach { treeMap[it.sourceStart] = it }
+            treeMap
+        }
+
         fun mapValue(value: Long): Long {
-            return ranges.find { it.sourceRange.contains(value) }?.map(value) ?: value
+            //todo: optimize?
+            val found = internalMap.floorEntry(value)?.value
+            return if (found != null && found.sourceRange.contains(value)) {
+                found.map(value)
+            } else {
+                value
+            }
         }
     }
 
     data class CategoryRange(val sourceStart: Long, val destinationStart: Long, val length: Long) {
         val sourceRange = LongRange(sourceStart, sourceStart + length - 1)
+        private val shift = destinationStart - sourceStart
         fun map(value: Long): Long {
-            return destinationStart + (value - sourceStart)
+            return shift + value
         }
     }
 }
