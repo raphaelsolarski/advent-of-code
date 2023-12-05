@@ -3,7 +3,7 @@ package com.raphalsolarski.advent.y2023.d05
 object D05 {
 
     fun parseInput(lines: List<String>): Almanac {
-        val seeds = lines[0].removePrefix("seeds:").trim().split(" ").map { it.toInt() }
+        val seeds = lines[0].removePrefix("seeds:").trim().split(" ").map { it.toLong() }
 
         val emptyLines = lines.withIndex().filter { it.value == "" }
 
@@ -12,8 +12,8 @@ object D05 {
         }
             .map { mapRaw ->
                 val mapName = mapRaw[1].removeSuffix(" map:")
-                val ranges = mapRaw.subList(2, mapRaw.size).map {
-                    val (destStart, sourceStart, size) = it.split(" ").map { it.toInt() }
+                val ranges = mapRaw.subList(2, mapRaw.size).map { mappingLine ->
+                    val (destStart, sourceStart, size) = mappingLine.split(" ").map { it.toLong() }
                     CategoryRange(sourceStart, destStart, size)
                 }
                 CategoryMap(mapName, ranges)
@@ -22,9 +22,30 @@ object D05 {
         return Almanac(seeds, maps)
     }
 
-    data class Almanac(val seeds: List<Int>, val maps: Map<String, CategoryMap>)
+    fun findLowestLocationNumber(input: List<String>): Long {
+        return parseInput(input)
+            .seeds
+            .minOf { computeLocationNumberForSeed(it, parseInput(input)) }
+    }
 
-    data class CategoryMap(val name: String, val ranges: List<CategoryRange>)
+    private fun computeLocationNumberForSeed(seed: Long, almanac: Almanac): Long {
+        return almanac.maps.values.fold(seed) { value, map ->
+            map.mapValue(value)
+        }
+    }
 
-    data class CategoryRange(val sourceStart: Int, val destinationStart: Int, val length: Int)
+    data class Almanac(val seeds: List<Long>, val maps: Map<String, CategoryMap>)
+
+    data class CategoryMap(val name: String, val ranges: List<CategoryRange>) {
+        fun mapValue(value: Long): Long {
+            return ranges.find { it.sourceRange.contains(value) }?.map(value) ?: value
+        }
+    }
+
+    data class CategoryRange(val sourceStart: Long, val destinationStart: Long, val length: Long) {
+        val sourceRange = LongRange(sourceStart, sourceStart + length - 1)
+        fun map(value: Long): Long {
+            return destinationStart + (value - sourceStart)
+        }
+    }
 }

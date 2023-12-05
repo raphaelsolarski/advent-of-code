@@ -1,5 +1,6 @@
 package com.raphalsolarski.advent.y2023.d05
 
+import com.raphalsolarski.advent.utils.ParseUtils
 import com.raphalsolarski.advent.y2023.d05.D05.CategoryRange
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -43,6 +44,8 @@ class D05Test {
         ""
     )
 
+    private val realInput = ParseUtils.readLinesFromResource("/2023/05/input.txt", withEmptyLines = true)
+
     @Test
     fun parseTest() {
         val almanac = D05.parseInput(exampleInput)
@@ -55,4 +58,15 @@ class D05Test {
             almanac.maps["humidity-to-location"]!!.ranges
         )
     }
+
+    @Test
+    fun exampleS1() {
+        assertEquals(35, D05.findLowestLocationNumber(exampleInput))
+    }
+
+    @Test
+    fun realS1() {
+        assertEquals(35, D05.findLowestLocationNumber(realInput))
+    }
+
 }
