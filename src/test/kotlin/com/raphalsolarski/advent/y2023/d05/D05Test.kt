@@ -75,8 +75,8 @@ class D05Test {
     }
 
     @Test
-    fun realS2() {
-        assertEquals(35, D05.findLowestLocationNumber(realInput))
+    fun realS1() {
+        assertEquals(56931769, D05.findLowestLocationNumber(realInput))
     }
 
 }
