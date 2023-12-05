@@ -36,4 +36,14 @@ class D04Test {
         Assertions.assertEquals(26914, D04.computeTotalPoints(realInput))
     }
 
+    @Test
+    fun exampleS2() {
+        Assertions.assertEquals(30, D04.computeRemainingScratchCardsCount(exampleInput))
+    }
+
+    @Test
+    fun realS2() {
+        Assertions.assertEquals(13080971, D04.computeRemainingScratchCardsCount(realInput))
+    }
+
 }

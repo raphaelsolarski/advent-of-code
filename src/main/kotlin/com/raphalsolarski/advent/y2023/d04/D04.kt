@@ -4,6 +4,31 @@ import java.util.regex.Pattern
 
 object D04 {
 
+    fun computeRemainingScratchCardsCount(lines: List<String>): Int {
+        val originals = lines
+            .map(::parseLineToScratchCard)
+
+        return computeRemainingCardsOccurrences(originals).values.sum()
+    }
+
+    private fun computeRemainingCardsOccurrences(originals: List<ScratchCard>): Map<Int, Int> {
+        val idToInstances = originals.associate { it.id to 1 }.toMutableMap()
+
+        originals.forEach { currentScratchCard ->
+            val commonNumbersCount = currentScratchCard.commonNumbers().size
+            if (commonNumbersCount > 0) {
+                val id = currentScratchCard.id
+                val wonScratchCardsRange = IntRange(id + 1, minOf(id + commonNumbersCount, originals.size))
+                val wonScratchCardsCount = idToInstances[id]!!
+
+                wonScratchCardsRange.forEach { wonCardId ->
+                    idToInstances[wonCardId] = (idToInstances[wonCardId]!! + wonScratchCardsCount)
+                }
+            }
+        }
+        return idToInstances
+    }
+
     fun computeTotalPoints(lines: List<String>): Int {
         return lines
             .map(::parseLineToScratchCard)
@@ -24,13 +49,15 @@ object D04 {
 
     data class ScratchCard(val id: Int, val winningNumbers: List<Int>, val selectedNumbers: List<Int>) {
         fun computePoints(): Int {
-            val commonNumbers = winningNumbers.toSet().intersect(selectedNumbers.toSet())
+            val commonNumbers = commonNumbers()
             return if (commonNumbers.isEmpty()) {
                 0
             } else {
                 1 * pow(2, commonNumbers.size - 1)
             }
         }
+
+        fun commonNumbers() = winningNumbers.toSet().intersect(selectedNumbers.toSet())
 
         private fun pow(number: Int, exponent: Int): Int {
             if (exponent == 0) {
