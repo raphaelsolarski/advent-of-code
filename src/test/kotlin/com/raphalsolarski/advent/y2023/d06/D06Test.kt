@@ -17,17 +17,17 @@ class D06Test {
 
     @Test
     fun parseTest() {
-        assertEquals(listOf(7 to 9, 15 to 40, 30 to 200), D06.parseTimeToDistance(exampleInput))
+        assertEquals(71530L to 940200L, D06.parseTimeToDistance(exampleInput))
     }
 
     @Test
-    fun exampleS1() {
-        assertEquals(288, D06.computeResult(exampleInput))
+    fun exampleS2() {
+        assertEquals(71503, D06.computeResult(exampleInput))
     }
 
     @Test
-    fun realS1() {
-        assertEquals(2269432, D06.computeResult(realInput))
+    fun realS2() {
+        assertEquals(35865985, D06.computeResult(realInput))
     }
 
 }
